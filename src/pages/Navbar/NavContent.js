@@ -22,24 +22,26 @@ export default function NavContent() {
                             {
                                 id: 'navMens',
                                 type: 'menu',
-                                innerVal: 'Mens',
+                                innerVal: 'mens',
                                 classes: 'nav-item position-static p-1 col-12 col-lg',
                                 drop: {
                                     id: 'navMenDrop',
-                                    section: 'Mens',
+                                    section: 'mens',
                                     subtitle: "When life gives you lemons, make some lemonade and fuck lifes wife"
-                                }
+                                },
+                                categories:['all', 'tops', 'bottoms', 'tees', 'pants', 'shirts', 'shorts', 'hoodies', 'sweatpants', 'polos' , 'sweaters', 'suits', 'jackets', 'coats']
                             },
                             {
                                 id: 'navWomens',
                                 type: 'menu',
-                                innerVal: 'Womens',
+                                innerVal: 'womens',
                                 classes: 'nav-item position-static p-1 col-12 col-lg',
                                 drop: {
                                     id: 'navWomenDrop',
-                                    section: 'Womens',
-                                    subtitle: "When life gives you lemons, make some lemonade and fuck lifes wife"
-                                }
+                                    section: 'womens',
+                                    subtitle: "Con all the stupid men and get yours bih"
+                                },
+                                categories:['all', 'tops', 'bottoms', 'tees', 'pants', 'shirts', 'shorts', 'hoodies', 'sweatpants', 'sweaters', 'skirts', 'jackets', 'dresses', 'coats']
                             }
                         ]}
                     />

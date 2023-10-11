@@ -1,28 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SearchBarResults from './SearchBarResults';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 export default function SearchBar() {
 
     const [value, setValue] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
+    // const [suggestions, setSuggestions] = useState([]);
     const [hideSuggestions, setHideSuggestions] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { data } = await axios.get(
-                    `https://dummyjson.com/products/search?q=${value}`
-                );
+    const getProducts = () => {
+        return axios.get(
+            `https://dummyjson.com/products/search?q=${value}`
+        ).then((res) => res.data.products)
+    }
 
-                setSuggestions(data.products);
-            } catch (error) {
-                console.log(error);
-            }
-        };
+    const { data } = useQuery({
+        queryKey: ['products', value],
+        queryFn: getProducts,
+    })
 
-        fetchData();
-    }, [value]);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const { data } = await axios.get(
+    //                 `https://dummyjson.com/products/search?q=${value}`
+    //             );
+
+    //             setSuggestions(data.products);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, [value]);
 
     return (
         <>
@@ -44,14 +56,14 @@ export default function SearchBar() {
                         onBlur={async () => {
                             setTimeout(() => {
                                 setHideSuggestions(true);
-                            }, 200);
+                            }, 100);
                         }}
                     />
 
                 </div>
             </form>
 
-            <SearchBarResults items={suggestions} flag={hideSuggestions} />
+            <SearchBarResults items={data} flag={hideSuggestions} />
         </>
     )
 }

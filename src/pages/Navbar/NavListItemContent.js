@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function NavListItemContent({ id, type, section, titleSection }) {
+export default function NavListItemContent({ id, type, section, titleSection, categories }) {
 
     return (
         type === 'menu' ?
@@ -10,30 +10,23 @@ export default function NavListItemContent({ id, type, section, titleSection }) 
 
                         {/* HEADER */}
                         <div className='col-12 px-3'>
-                            <h5 className='border-bottom d-flex justify-content-between py-2'>
+                            <h5 className='border-bottom d-flex justify-content-between py-2 text-capitalize'>
                                 {titleSection.title}
                                 <button type="button" className="btn-close btn-close-white p-0" aria-label="Close"></button>
                             </h5>
-                            <p>{titleSection.subTitle}</p>
+                            <p className='text-capitalize'>{titleSection.subTitle}</p>
                         </div>
 
                         {/* CATEGORIES */}
                         <div className='col-12 px-3'>
-                            <h5 className='border-bottom py-2'>Shop {section} By</h5>
+                            <h5 className='border-bottom py-2 text-capitalize'>Shop {section} By</h5>
                             <div className='row px-2'>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>All</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Tops</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Bottoms</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Tees</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Pants</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Shirts</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Shorts</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Polos</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Sweatpants</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Hoodies</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Sweaters</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Jackets</button>
-                                <button className='col-lg-2 col-6 btn btn-dark text-white' type='button'>Coats</button>
+                                {
+                                    categories.map((cat) =>
+                                        <a href={cat === 'all'? `/${section}` : `/${section}/${cat}`} className='col-lg-2 col-6 btn btn-dark text-white text-capitalize' key={cat}>{cat}</a>
+                                    )
+                                }
+                                {/* <button className='col-lg-2 col-6 btn btn-dark text-white  text-capitalize' type='button' onClick={() => goto(`/${section.toLowerCase()}`, { state : {section: section} })}> */}
                             </div>
                         </div>
 

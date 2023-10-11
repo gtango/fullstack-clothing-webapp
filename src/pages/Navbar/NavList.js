@@ -1,7 +1,7 @@
 import React from 'react'
 import NavListItem from './NavListItem';
 
-export default function NavList({ id, order, section }) {
+export default function NavList({ id, order, section, categories }) {
     return (
         <>
             <ul className={
@@ -21,6 +21,7 @@ export default function NavList({ id, order, section }) {
                                 contentValue={item.innerVal}
                                 dropdownInfo={item.drop}
                                 icon={item.icon}
+                                categories={item.categories}
                             />
                         )
                     })

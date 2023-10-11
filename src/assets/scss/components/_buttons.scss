@@ -14,10 +14,54 @@
   background-color: rgba(92, 86, 89, 0.8);
 }
 
+.img-hover div{
+  visibility: hidden;
+  opacity: 0;
+  color:'black';
+  transition: visibility 0s, opacity 0.5s;
+}
+.img-hover:hover div{
+  opacity: 1;
+  visibility: visible;
+}
+
 .landingSectionItem:hover p{
   color: red;
   transform: scale(1.05);
 }
+
+.landingSectionWomens {
+  // display: inline;
+  // overflow: hidden;
+  text-shadow: 1px 0px 3px black;
+}
+
+.landingSectionWomens i {
+  opacity: 0;
+  left: 100%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  position: absolute;
+}
+
+.landingSectionWomens:hover i {
+  opacity: 1;
+  transition: opacity 0.1s ease;
+}
+
+.landingSectionWomens:hover p {
+  transition: transform 0.1s ease;
+  transform: translateX(-5vw) !important;
+}
+
+// .landingSectionWomens:hover p::after{
+//   top: 50%;
+//   left: 100%;
+//   position: absolute;
+//   white-space: nowrap ;
+//   text-align: center;
+//   font-size: xx-large;
+// }
 
 .suggestions {
   /* Styles of the suggestions container */
@@ -35,4 +79,17 @@
   /* Will hide the suggestions */
   display: none;
   visibility: hidden; // We can also use `opacity: 0`
+}
+
+.crumblink {
+  color: black;
+  text-decoration: none;
+}
+
+.crumblink:hover {
+  color:red;
+}
+
+.product:hover {
+  border: 1px solid black;
 }
