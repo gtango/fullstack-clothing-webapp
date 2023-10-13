@@ -27,7 +27,7 @@ export default function NavContent() {
                                 drop: {
                                     id: 'navMenDrop',
                                     section: 'mens',
-                                    subtitle: "When life gives you lemons, make some lemonade and fuck lifes wife"
+                                    subtitle: "Life is short. Drive fast and leave a sexy corpse. That's one of my mottos - Stanley Hudson"
                                 },
                                 categories:['all', 'tops', 'bottoms', 'tees', 'pants', 'shirts', 'shorts', 'hoodies', 'sweatpants', 'polos' , 'sweaters', 'suits', 'jackets', 'coats']
                             },
@@ -39,7 +39,7 @@ export default function NavContent() {
                                 drop: {
                                     id: 'navWomenDrop',
                                     section: 'womens',
-                                    subtitle: "Con all the stupid men and get yours bih"
+                                    subtitle: "I generally avoid temptation unless I can't resist it - Mae West"
                                 },
                                 categories:['all', 'tops', 'bottoms', 'tees', 'pants', 'shirts', 'shorts', 'hoodies', 'sweatpants', 'sweaters', 'skirts', 'jackets', 'dresses', 'coats']
                             }
