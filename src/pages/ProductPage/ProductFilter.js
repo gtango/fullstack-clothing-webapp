@@ -1,154 +1,555 @@
-import React from 'react'
-import ProductCategoryList from './ProductCategoryList'
+import React from "react";
+import ProductCategoryList from "./ProductCategoryList";
 
-export default function ProductFilter({ section, categories }) {
-    return (
-        <div className='col-2 d-none d-lg-block'>
-            <ProductCategoryList section={section} categories={categories}/>
+export default function ProductFilter({
+  params,
+  paramfn,
+  clearfn,
+  section,
+  categories,
+  filterSections,
+}) {
+  function activateFilter(id) {
+    let initialElement = document.getElementById(id);
+    let filterItem = document.getElementById(
+      initialElement.id.replace("canvas-", "")
+    );
+    let splitItemArray = filterItem.id.split("-");
+    let filterSection = splitItemArray[0];
+    let filterValue = splitItemArray[1];
+    let min = 0;
+    let max = 9999.0;
 
-            <h6 className='text-center border-bottom border-black px-1 py-3 m-0'>Filter By</h6>
+    // if: deleteing filter
+    // else: adding filter
+    if (filterItem.classList.contains("active")) {
+      filterItem.classList.remove("active");
+      filterItem.classList.add("order-last");
+      initialElement.classList.remove("active");
+      initialElement.classList.add("order-last");
 
-            <div className='border-bottom border-dark py-0 px-1'>
-                <a className='btn w-100 d-flex justify-content-between my-1 px-3 py-2'
-                    data-bs-toggle='collapse'
-                    href='#brandCollapse'
-                    role='button'
-                    aria-expanded='false'
-                    aria-controls='brandCollapse'
-                    onClick={() => console.log("brand filter")}
+      if (filterSection.localeCompare("price") === 0) {
+        params.delete("min");
+        params.delete("max");
+      } else {
+        if (filterSection.localeCompare("instock") === 0) {
+          if (filterItem.id.localeCompare("instock-true") === 0) {
+            document
+              .getElementById("instock-false")
+              .classList.remove("disabled");
+            document
+              .getElementById("canvas-instock-false")
+              .classList.remove("disabled");
+          } else {
+            document
+              .getElementById("instock-true")
+              .classList.remove("disabled");
+            document
+              .getElementById("canvas-instock-true")
+              .classList.remove("disabled");
+          }
+        }
+        params.delete(filterSection, filterValue);
+      }
+    } else {
+      filterItem.classList.add("active");
+      filterItem.classList.remove("order-last");
+      initialElement.classList.add("active");
+      initialElement.classList.remove("order-last");
+
+      if (filterSection.localeCompare("price") === 0) {
+        removeSimilarActiveElements(filterSection, filterItem.id);
+        params.delete("min");
+        params.delete("max");
+        min = filterValue;
+        max = splitItemArray[2];
+        params.append("min", min);
+        params.append("max", max);
+      } else {
+        if (filterSection.localeCompare("instock") === 0) {
+          removeSimilarActiveElements(filterSection, filterItem.id);
+          if (filterItem.id.localeCompare("instock-true") === 0) {
+            document.getElementById("instock-false").classList.add("disabled");
+            document
+              .getElementById("canvas-instock-false")
+              .classList.add("disabled");
+          } else {
+            document.getElementById("instock-true").classList.add("disabled");
+            document
+              .getElementById("canvas-instock-true")
+              .classList.add("disabled");
+          }
+        }
+        params.append(filterSection, filterValue);
+      }
+    }
+    params.delete("page");
+    paramfn(params);
+  }
+
+  function removeSimilarActiveElements(element, id) {
+    let activeElements = document.querySelectorAll(".active");
+    activeElements.forEach((item) => {
+      if (
+        item.classList.contains("active") &&
+        item.id.includes(element) &&
+        item.id.localeCompare(id) !== 0
+      ) {
+        item.classList.remove("active");
+        item.classList.add("order-last");
+      }
+    });
+  }
+
+  function clearAllFilters(){
+    clearfn()
+    let activeElements = document.querySelectorAll('button.active')
+    activeElements.forEach((element) => element.classList.remove('active'))
+  }
+
+  return (
+    <>
+      {/* Regular Filters -- Large Screen */}
+      <div className="col-2 d-none d-lg-block">
+        {params.size > 0 ? 
+          <div className="w-100 pb-1">
+            <button className="btn text-capitalize w-100" onClick={()=> clearAllFilters()}>
+              clear all filters
+            </button>
+          </div>
+        :
+          <></>
+        }
+        <ProductCategoryList section={section} categories={categories} />
+
+        <h6 className="text-center border-bottom border-black px-1 py-3 m-0">
+          Filter By
+        </h6>
+
+        {/* Brands - Finished */}
+        <div className="border-bottom border-dark py-0 px-1">
+          <a
+            className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+            data-bs-toggle="collapse"
+            href="#brandCollapse"
+            role="button"
+            aria-expanded="false"
+            aria-controls="brandCollapse"
+            onClick={() => console.log("brand filter")}
+          >
+            <p className="m-0 p-0 text-capitalize">Brand</p>
+            <p className="m-0 p-0">+</p>
+          </a>
+          <div className="collapse" id="brandCollapse">
+            <div className="d-flex flex-column">
+              {filterSections.brands.map((item) => (
+                <button
+                  className={
+                    params.getAll("brands").includes(item)
+                      ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton text-capitalize active"
+                      : "btn btn-outline-dark my-1 py-2 px-3 text-start order-last filterbutton text-capitalize"
+                  }
+                  type="button"
+                  aria-pressed="false"
+                  onClick={(e) => activateFilter(e.target.id)}
+                  id={`brands-${item.replace(" ", "")}`}
                 >
-                    <p className='m-0 p-0 text-capitalize'>Brand</p>
-                    <p className='m-0 p-0'>+</p>
-                </a>
-                <div className='collapse' id='brandCollapse'>
-                    <div className='d-flex flex-column'>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-Nike'>Nike</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-Adidas'>Adidas</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-UnderArmour'>Under Armour</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-Vans'>Vans</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-Supreme'>Supreme</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-Crocs'>Crocs</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-NewBalance'>NewBalance</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='brand-AirJordan'>Air Jordan</button>
-                    </div>
-                </div>
+                  {item}
+                </button>
+              ))}
             </div>
-
-            <div className='border-bottom border-dark py-0 px-1'>
-                <a className='btn w-100 d-flex justify-content-between my-1 px-3 py-2'
-                    data-bs-toggle='collapse'
-                    href='#sizeCollapse'
-                    role='button'
-                    aria-expanded='false'
-                    aria-controls='sizeCollapse'
-                    onClick={() => console.log("size filter")}
-                >
-                    <p className='m-0 p-0 text-capitalize'>Size</p>
-                    <p className='m-0 p-0'>+</p>
-                </a>
-                <div className='collapse p-2 ' id='sizeCollapse'>
-                    <div className='d-flex flex-wrap justify-content-evenly'>
-                        <p className='col-12 text-center m-0 pb-2 pb-xl-1'>Shirt Size</p>
-                        <div className='row px-2 justify-content-evenly text-center'>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-small'>S</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-medium'>M</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-large'>L</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-extralarge'>XL</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-doublelarge'>XXL</button>
-                        </div>
-                    </div>
-                    <div className='d-flex flex-wrap justify-content-evenly'>
-                        <p className='col-12 text-center m-0 pb-2 pb-xl-1'>Shoe Size</p>
-                        <div className='row row-cols-2 px-2 justify-content-evenly text-center'>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-7'>7</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-7.5'>7.5</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-8'>8</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-8.5'>8.5</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-9'>9</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-9.5'>9.5</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-10'>10</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-10.5'>10.5</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-11'>11</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-11.5'>11.5</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-12'>12</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-12.5'>12.5</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-13'>13</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-13.5'>13.5</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-14'>14</button>
-                            <button className='col btn btn-outline-dark text-center order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='size-14.5'>14.5</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className='border-bottom border-dark py-0 px-1'>
-                <a className='btn w-100 d-flex justify-content-between my-1 px-3 py-2'
-                    data-bs-toggle='collapse'
-                    href='#colorCollapse'
-                    role='button'
-                    aria-expanded='false'
-                    aria-controls='colorCollapse'
-                    onClick={() => console.log("color filter")}
-                >
-                    <p className='m-0 p-0 text-capitalize'>Color</p>
-                    <p className='m-0 p-0'>+</p>
-                </a>
-                <div className='collapse' id='colorCollapse'>
-                    <div className='d-flex flex-column'>
-                        <button className='btn btn-outline-dark bg-white my-1 py-2 px-3 text-start order-last text-dark' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='color-White'>White</button>
-                        <button className='btn btn-outline-dark bg-black my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='color-Black'>Black</button>
-                        <button className='btn btn-outline-dark bg-danger my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='color-Red'>Red</button>
-                        <button className='btn btn-outline-dark bg-success my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='color-Green'>Green</button>
-                        <button className='btn btn-outline-dark bg-primary my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='color-Blue'>Blue</button>
-                        <button className='btn btn-outline-dark bg-warning my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='color-Yellow'>Yellow</button>
-                        <button className='btn btn-outline-dark bg-warning my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} style={{ backgroundImage: "linear-gradient(to right, red,orange,yellow,green,blue,indigo)" }} id='color-Multi'>Multi</button>
-                    </div>
-                </div>
-            </div>
-
-            <div className='border-bottom border-dark py-0 px-1'>
-                <a className='btn w-100 d-flex justify-content-between my-1 px-3 py-2'
-                    data-bs-toggle='collapse'
-                    href='#priceCollapse'
-                    role='button'
-                    aria-expanded='false'
-                    aria-controls='priceCollapse'
-                    onClick={() => console.log("price filter")}
-                >
-                    <p className='m-0 p-0 text-capitalize'>Price</p>
-                    <p className='m-0 p-0'>+</p>
-                </a>
-                <div className='collapse' id='priceCollapse'>
-                    <div className='d-flex flex-column'>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='price-0-25'>$0-$25</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='price-25-50'>$25-$50</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='price-50-100'>$50-$100</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='price-100-200'>$100-$200</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='price-200-500'>$200-$500</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='price-1000'>$ Tax Refund Type</button>
-                    </div>
-                </div>
-            </div>
-
-            <div className='border-bottom border-dark py-0 px-1'>
-                <a className='btn w-100 d-flex justify-content-between my-1 px-3 py-2'
-                    data-bs-toggle='collapse'
-                    href='#availableCollapse'
-                    role='button'
-                    aria-expanded='false'
-                    aria-controls='availableCollapse'
-                    onClick={() => console.log("available filter")}
-                >
-                    <p className='m-0 p-0 text-capitalize'>avaliability</p>
-                    <p className='m-0 p-0'>+</p>
-                </a>
-                <div className='collapse' id='availableCollapse'>
-                    <div className='d-flex flex-column'>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='available-yes'>In-Stock</button>
-                        <button className='btn btn-outline-dark my-1 py-2 px-3 text-start order-last' type='button' aria-pressed='false' onClick={() => console.log("filter press")} id='available-no'>Out-of-Stock</button>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    )
+
+        {/* Sizes - Finished */}
+        <div className="border-bottom border-dark py-0 px-1">
+          <a
+            className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+            data-bs-toggle="collapse"
+            href="#sizeCollapse"
+            role="button"
+            aria-expanded="false"
+            aria-controls="sizeCollapse"
+            onClick={() => console.log("size filter")}
+          >
+            <p className="m-0 p-0 text-capitalize">Size</p>
+            <p className="m-0 p-0">+</p>
+          </a>
+          <div className="collapse p-2" id="sizeCollapse">
+            <div className="d-flex flex-wrap justify-content-evenly">
+              <p className="col-12 text-center m-0 pb-2 pb-xl-1">Shirt Size</p>
+              {filterSections.sizes.clothes.map((item) => (
+                <button
+                  className={
+                    params.getAll("sizes").includes(item.size)
+                      ? "col btn btn-outline-dark text-center text-uppercase m-1 active"
+                      : "col btn btn-outline-dark text-center order-last text-uppercase m-1"
+                  }
+                  type="button"
+                  aria-pressed="false"
+                  onClick={(e) => activateFilter(e.target.id)}
+                  id={`sizes-${item.size}`}
+                >
+                  {item.icon}
+                </button>
+              ))}
+            </div>
+
+            <div className="d-flex flex-wrap justify-content-evenly">
+              <p className="col-12 text-center m-0 pb-2 pb-xl-1">Shoe Size</p>
+              <div className="row row-cols-2 justify-content-evenly text-center g-1">
+                {filterSections.sizes.shoes.map((size) => (
+                  <button
+                    className="col btn btn-outline-dark text-center order-last"
+                    type="button"
+                    aria-pressed="false"
+                    onClick={() => console.log("filter press")}
+                    id={`size-${size}`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Colors - Finished */}
+        <div className="border-bottom border-dark py-0 px-1">
+          <a
+            className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+            data-bs-toggle="collapse"
+            href="#colorCollapse"
+            role="button"
+            aria-expanded="false"
+            aria-controls="colorCollapse"
+            onClick={() => console.log("color filter")}
+          >
+            <p className="m-0 p-0 text-capitalize">Color</p>
+            <p className="m-0 p-0">+</p>
+          </a>
+          <div className="collapse" id="colorCollapse">
+            <div className="d-flex flex-column">
+              {filterSections.colors.map((color) => (
+                <button
+                  className={
+                    params.getAll("colors").includes(color.name)
+                      ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton colorfilterbutton text-capitalize active"
+                      : "btn btn-outline-dark my-1 py-2 px-3 text-start order-last filterbutton colorfilterbutton text-capitalize"
+                  }
+                  type="button"
+                  aria-pressed="false"
+                  onClick={(e) => activateFilter(e.target.id)}
+                  id={`colors-${color.name}`}
+                  style={{ background: color.customStyle }}
+                >
+                  {color.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Prices - Finished */}
+        <div className="border-bottom border-dark py-0 px-1">
+          <a
+            className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+            data-bs-toggle="collapse"
+            href="#priceCollapse"
+            role="button"
+            aria-expanded="false"
+            aria-controls="priceCollapse"
+            onClick={() => console.log("price filter")}
+          >
+            <p className="m-0 p-0 text-capitalize">Price</p>
+            <p className="m-0 p-0">+</p>
+          </a>
+          <div className="collapse" id="priceCollapse">
+            <div className="d-flex flex-column">
+              {filterSections.prices.map((price) => (
+                <button
+                  className={
+                    params.get("max")?.localeCompare(price.max) === 0
+                      ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton active"
+                      : "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton order-last"
+                  }
+                  type="button"
+                  aria-pressed="false"
+                  onClick={(e) => activateFilter(e.target.id)}
+                  id={`price-${price.min}-${price.max}`}
+                >
+                  {price.fun ?? `$${price.min}-$${price.max}`}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Instock - Finished */}
+        <div className="border-bottom border-dark py-0 px-1">
+          <a
+            className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+            data-bs-toggle="collapse"
+            href="#availableCollapse"
+            role="button"
+            aria-expanded="false"
+            aria-controls="availableCollapse"
+            onClick={() => console.log("available filter")}
+          >
+            <p className="m-0 p-0 text-capitalize">avaliability</p>
+            <p className="m-0 p-0">+</p>
+          </a>
+          <div className="collapse" id="availableCollapse">
+            <div className="d-flex flex-column">
+              {filterSections.instock.map((item) => (
+                <button
+                  className={
+                    params.get("instock")?.localeCompare(item.state) === 0
+                      ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton text-capitalize active"
+                      : "btn btn-outline-dark my-1 py-2 px-3 text-start order-last filterbutton text-capitalize"
+                  }
+                  type="button"
+                  aria-pressed="false"
+                  onClick={(e) => activateFilter(e.target.id)}
+                  id={`instock-${item.state}`}
+                >
+                  {item.icon}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Canvas Filters -- Small Screens */}
+      <div className="col-12 d-lg-none p-1">
+        <button
+          className="btn btn-outline-dark m-0 w-100"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#filterCanvas"
+        >
+          Filter By
+        </button>
+
+        <div
+          className="offcanvas offcanvas-end w-100 overflow-scroll"
+          style={{ background: "#F5EEE4" }}
+          id="filterCanvas"
+        >
+          <div className="offcanvas-header d-flex justify-content-end">
+            <button
+              type="button"
+              className="btn-close text-reset"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <ProductCategoryList section={section} categories={categories} />
+
+          <h6 className="w-100 text-center border-bottom border-black px-1 py-3 m-0">
+            Filter By
+          </h6>
+
+          {/* Canvas Brands */}
+          <div className="border-bottom border-dark py-0 px-1">
+            <a
+              className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+              data-bs-toggle="collapse"
+              href="#canvasBrandCollapse"
+              role="button"
+              aria-expanded="false"
+              aria-controls="canvasBrandCollapse"
+              onClick={() => console.log("brand filter")}
+            >
+              <p className="m-0 p-0 text-capitalize">Brand</p>
+              <p className="m-0 p-0">+</p>
+            </a>
+            <div className="collapse" id="canvasBrandCollapse">
+              <div className="d-flex flex-column">
+                {filterSections.brands.map((item) => (
+                  <button
+                    className={
+                      params.getAll("brands").includes(item)
+                        ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton text-capitalize active"
+                        : "btn btn-outline-dark my-1 py-2 px-3 text-start order-last filterbutton text-capitalize"
+                    }
+                    type="button"
+                    aria-pressed="false"
+                    onClick={(e) => activateFilter(e.target.id)}
+                    id={`canvas-brands-${item.replace(" ", "")}`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Canvas Sizes */}
+          <div className="border-bottom border-dark py-0 px-1">
+            <a
+              className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+              data-bs-toggle="collapse"
+              href="#canvasSizeCollapse"
+              role="button"
+              aria-expanded="false"
+              aria-controls="sizeCollapse"
+              onClick={() => console.log("size filter")}
+            >
+              <p className="m-0 p-0 text-capitalize">Size</p>
+              <p className="m-0 p-0">+</p>
+            </a>
+            <div className="collapse p-2 " id="canvasSizeCollapse">
+              <div className="d-flex flex-wrap justify-content-evenly">
+                <p className="col-12 text-center m-0 pb-2 pb-xl-1">
+                  Shirt Size
+                </p>
+                <div className="row px-2 justify-content-evenly text-center">
+                  {filterSections.sizes.clothes.map((item) => (
+                    <button
+                      className={
+                        params.getAll("sizes").includes(item.size)
+                          ? "col btn btn-outline-dark text-center text-uppercase m-1 active"
+                          : "col btn btn-outline-dark text-center order-last text-uppercase m-1"
+                      }
+                      type="button"
+                      aria-pressed="false"
+                      onClick={(e) => activateFilter(e.target.id)}
+                      id={`canvas-sizes-${item.size}`}
+                    >
+                      {item.icon}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="d-flex flex-wrap justify-content-evenly">
+                <p className="col-12 text-center m-0 pb-2 pb-xl-1">Shoe Size</p>
+                <div className="row row-cols-2 px-2 justify-content-evenly text-center">
+                  {filterSections.sizes.shoes.map((size) => (
+                    <button
+                      className="col btn btn-outline-dark text-center order-last"
+                      type="button"
+                      aria-pressed="false"
+                      onClick={() => console.log("filter press")}
+                      id={`canvas-size-${size}`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Canvas Colors */}
+          <div className="border-bottom border-dark py-0 px-1">
+            <a
+              className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+              data-bs-toggle="collapse"
+              href="#canvasColorCollapse"
+              role="button"
+              aria-expanded="false"
+              aria-controls="canvasColorCollapse"
+              onClick={() => console.log("color filter")}
+            >
+              <p className="m-0 p-0 text-capitalize">Color</p>
+              <p className="m-0 p-0">+</p>
+            </a>
+            <div className="collapse" id="canvasColorCollapse">
+              <div className="d-flex flex-column">
+                {filterSections.colors.map((color) => (
+                  <button
+                    className={
+                      params.getAll("colors").includes(color.name)
+                        ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton colorfilterbutton text-capitalize active"
+                        : "btn btn-outline-dark my-1 py-2 px-3 text-start order-last filterbutton colorfilterbutton text-capitalize"
+                    }
+                    type="button"
+                    aria-pressed="false"
+                    onClick={(e) => activateFilter(e.target.id)}
+                    id={`canvas-colors-${color.name}`}
+                    style={{ background: color.customStyle }}
+                  >
+                    {color.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Canvas Prices */}
+          <div className="border-bottom border-dark py-0 px-1">
+            <a
+              className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+              data-bs-toggle="collapse"
+              href="#canvasPriceCollapse"
+              role="button"
+              aria-expanded="false"
+              aria-controls="canvasPriceCollapse"
+              onClick={() => console.log("price filter")}
+            >
+              <p className="m-0 p-0 text-capitalize">Price</p>
+              <p className="m-0 p-0">+</p>
+            </a>
+            <div className="collapse" id="canvasPriceCollapse">
+              <div className="d-flex flex-column">
+                {filterSections.prices.map((price) => (
+                  <button
+                    className={
+                      params.get("max")?.localeCompare(price.max) === 0
+                        ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton active"
+                        : "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton order-last"
+                    }
+                    type="button"
+                    aria-pressed="false"
+                    onClick={(e) => activateFilter(e.target.id)}
+                    id={`canvas-price-${price.min}-${price.max}`}
+                  >
+                    {price.fun ?? `$${price.min}-$${price.max}`}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Canvas Instock */}
+          <div className="border-bottom border-dark py-0 px-1">
+            <a
+              className="btn w-100 d-flex justify-content-between my-1 px-3 py-2"
+              data-bs-toggle="collapse"
+              href="#canvasInstockCollapse"
+              role="button"
+              aria-expanded="false"
+              aria-controls="canvasInstockCollapse"
+              onClick={() => console.log("instock filter")}
+            >
+              <p className="m-0 p-0 text-capitalize">avaliability</p>
+              <p className="m-0 p-0">+</p>
+            </a>
+            <div className="collapse" id="canvasInstockCollapse">
+              <div className="d-flex flex-column">
+                {filterSections.instock.map((item) => (
+                  <button
+                    className={
+                      params.get("instock")?.localeCompare(item.state) === 0
+                        ? "btn btn-outline-dark my-1 py-2 px-3 text-start filterbutton text-capitalize active"
+                        : "btn btn-outline-dark my-1 py-2 px-3 text-start order-last filterbutton text-capitalize"
+                    }
+                    type="button"
+                    aria-pressed="false"
+                    onClick={(e) => activateFilter(e.target.id)}
+                    id={`canvas-instock-${item.state}`}
+                  >
+                    {item.icon}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

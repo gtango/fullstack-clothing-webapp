@@ -52,7 +52,7 @@ export default function NavListItemContent({ id, type, section, titleSection, ca
                 <p className='border-bottom py-2 m-0'>{section}</p>
                 {id.toLowerCase().includes('cart') ?
                     titleSection.list.length === 0 ?
-                        <p className='m-0 p-3'>... this bitch empty bruh</p>
+                        <p className='m-0 p-3'>... *Cricket Noises* ...</p>
                         :
                         titleSection.list.map(section => {
                             return (

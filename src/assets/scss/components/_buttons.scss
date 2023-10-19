@@ -1,3 +1,23 @@
+// Chrome, Safari, Edge, Opera 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+// Firefox 
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input:focus::placeholder {
+  color: transparent;
+}
+
+::placeholder {
+  color: black;
+}
+
 .btn:focus {
   z-index: 1;
 }
@@ -92,4 +112,15 @@
 
 .product:hover {
   border: 1px solid black;
+}
+
+.colorfilterbutton:hover, .colorfilterbutton.active {
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.filterbutton.active:after {
+  float: right;
+  color: #fff;
+  content: "X";
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
