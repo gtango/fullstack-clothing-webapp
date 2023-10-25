@@ -32,24 +32,24 @@ export default function NavList({ id, order, section, categories }) {
 
 }
 
-<>
-    <NavListItem
-        id="search"
-        names={'nav-item flex-fill w-100'}
-        contentType={'search'}
-    />
+// {/* <>
+//     <NavListItem
+//         id="search"
+//         names={'nav-item flex-fill w-100'}
+//         contentType={'search'}
+//     />
 
-    <NavListItem
-        id={'cart'}
-        names={'nav-item dropdown'}
-        contentType={'button'}
-        icon={'bi bi-cart'}
-    />
+//     <NavListItem
+//         id={'cart'}
+//         names={'nav-item dropdown'}
+//         contentType={'button'}
+//         icon={'bi bi-cart'}
+//     />
 
-    <NavListItem
-        id={'profile'}
-        names={'nav-item dropdown'}
-        contentType={'button'}
-        icon={"bi bi-person-circle"}
-    />
-</>
+//     <NavListItem
+//         id={'profile'}
+//         names={'nav-item dropdown'}
+//         contentType={'button'}
+//         icon={"bi bi-person-circle"}
+//     />
+// </> */}

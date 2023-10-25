@@ -52,7 +52,6 @@ export default function ViewProduct() {
             </button>
           </div>
 
-          {/* <img className='col-6' style={{height:'75vh'}} src={data === null || data === undefined ? MILO : data.image} alt={data === null || data === undefined ? 'Loading' : data.productDescription}></img> */}
           <img
             className="col-lg-6 col-12"
             style={{

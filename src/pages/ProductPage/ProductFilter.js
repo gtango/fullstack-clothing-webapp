@@ -153,6 +153,7 @@ export default function ProductFilter({
                   aria-pressed="false"
                   onClick={(e) => activateFilter(e.target.id)}
                   id={`brands-${item.replace(" ", "")}`}
+                  key={item}
                 >
                   {item}
                 </button>
@@ -189,6 +190,7 @@ export default function ProductFilter({
                   aria-pressed="false"
                   onClick={(e) => activateFilter(e.target.id)}
                   id={`sizes-${item.size}`}
+                  key={item.size}
                 >
                   {item.icon}
                 </button>
@@ -205,6 +207,7 @@ export default function ProductFilter({
                     aria-pressed="false"
                     onClick={() => console.log("filter press")}
                     id={`size-${size}`}
+                    key={size}
                   >
                     {size}
                   </button>
@@ -242,6 +245,7 @@ export default function ProductFilter({
                   onClick={(e) => activateFilter(e.target.id)}
                   id={`colors-${color.name}`}
                   style={{ background: color.customStyle }}
+                  key={color.name}
                 >
                   {color.name}
                 </button>
@@ -277,6 +281,7 @@ export default function ProductFilter({
                   aria-pressed="false"
                   onClick={(e) => activateFilter(e.target.id)}
                   id={`price-${price.min}-${price.max}`}
+                  key={price.max}
                 >
                   {price.fun ?? `$${price.min}-$${price.max}`}
                 </button>
@@ -312,6 +317,7 @@ export default function ProductFilter({
                   aria-pressed="false"
                   onClick={(e) => activateFilter(e.target.id)}
                   id={`instock-${item.state}`}
+                  key={item.icon}
                 >
                   {item.icon}
                 </button>
@@ -379,6 +385,7 @@ export default function ProductFilter({
                     aria-pressed="false"
                     onClick={(e) => activateFilter(e.target.id)}
                     id={`canvas-brands-${item.replace(" ", "")}`}
+                    key={`canvas-${item}`}
                   >
                     {item}
                   </button>
@@ -418,6 +425,7 @@ export default function ProductFilter({
                       aria-pressed="false"
                       onClick={(e) => activateFilter(e.target.id)}
                       id={`canvas-sizes-${item.size}`}
+                      key={`canvas-${item.size}`}
                     >
                       {item.icon}
                     </button>
@@ -434,6 +442,7 @@ export default function ProductFilter({
                       aria-pressed="false"
                       onClick={() => console.log("filter press")}
                       id={`canvas-size-${size}`}
+                      key={`canvas-${size}`}
                     >
                       {size}
                     </button>
@@ -471,6 +480,7 @@ export default function ProductFilter({
                     onClick={(e) => activateFilter(e.target.id)}
                     id={`canvas-colors-${color.name}`}
                     style={{ background: color.customStyle }}
+                    key={`canvas-${color.name}`}
                   >
                     {color.name}
                   </button>
@@ -506,6 +516,7 @@ export default function ProductFilter({
                     aria-pressed="false"
                     onClick={(e) => activateFilter(e.target.id)}
                     id={`canvas-price-${price.min}-${price.max}`}
+                    key={`canvas-${price.max}`}
                   >
                     {price.fun ?? `$${price.min}-$${price.max}`}
                   </button>
@@ -541,6 +552,7 @@ export default function ProductFilter({
                     aria-pressed="false"
                     onClick={(e) => activateFilter(e.target.id)}
                     id={`canvas-instock-${item.state}`}
+                    key={`canvas-${item.icon}`}
                   >
                     {item.icon}
                   </button>

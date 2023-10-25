@@ -80,12 +80,17 @@ export default function NavContent() {
                                 classes: 'nav-item text-center m-0 p-1',
                                 drop: {
                                     id: 'navProfileDrop',
-                                    section: 'Welcome!',
+                                    section: 
+                                    JSON.parse(localStorage.getItem('user'))?.username !== undefined ?
+                                    `welcome, ${JSON.parse(localStorage.getItem('user'))?.username}!`
+                                    :
+                                    'welcome!'
+                                    ,
                                     subtitle: "",
                                     list: [
-                                        "Profile",
-                                        "Login",
-                                        "Logout"
+                                        "profile",
+                                        "login",
+                                        "logout"
                                     ]
                                 }
                             },
