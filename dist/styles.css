@@ -11976,6 +11976,36 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+body {
+  background: #F5EEE4;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input:focus::-moz-placeholder {
+  color: transparent;
+}
+
+input:focus::placeholder {
+  color: transparent;
+}
+
+::-moz-placeholder {
+  color: black;
+}
+
+::placeholder {
+  color: black;
+}
+
 .btn:focus {
   z-index: 1;
 }
@@ -12057,3 +12087,14 @@ textarea.form-control-lg {
 .product:hover {
   border: 1px solid black;
 }
+
+.colorfilterbutton:hover, .colorfilterbutton.active {
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.filterbutton.active:after {
+  float: right;
+  color: #fff;
+  content: "X";
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}/*# sourceMappingURL=styles.css.map */

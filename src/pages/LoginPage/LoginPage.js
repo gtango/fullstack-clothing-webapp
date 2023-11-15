@@ -4,21 +4,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const intialFormValues = { username: "", password: "" };
+  // const intialErrorValues = { username: [], password: [] };
   const [formValues, setFormValues] = useState(intialFormValues);
+  // const [formErrors, setFormErrors] = useState(intialErrorValues);
   const [submit, setSubmit] = useState(false);
 
-  function saveUser(username, userId, expire){
-    console.log('saving')
+  function saveUser(username, userId, expire, hours) {
     const user = {
       username: username,
       userId: userId,
-      expire: expire,
-    }
-    
-    localStorage.setItem("user", JSON.stringify(user))
-    navigate("/login/success")
+      expire: expire + (hours * (60 * 60000)),
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    navigate("/login/success");
   }
 
   const login = async (user, password) => {
@@ -28,25 +29,26 @@ export default function LoginPage() {
       { withCredentials: "true" }
     );
 
-    saveUser(result.data.username, result.data.id,  Date.now() + 86400000)
+    saveUser(result.data.username, result.data.id, Date.now(), 24);
     return result.data;
   };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setSubmit(false)
+    setSubmit(false);
     setFormValues({ ...formValues, [id]: value });
   };
 
-  const { error, isFetching, } = useQuery({
+  const { error, isFetching } = useQuery({
     queryKey: ["loginQuery", submit],
-    queryFn: () => login(formValues.username, formValues.password),
+    queryFn: () =>
+      login(formValues.username.toString(), formValues.password.toString()),
+    // enabled: !!submit && formErrors.password.length === 0 && formErrors.username.length === 0,
     enabled: !!submit,
     refetchOnWindowFocus: false,
   });
 
   if (isFetching) {
-    
     return (
       <div
         className="container-fluid d-flex flex-column justify-content-center align-items-center"
@@ -75,6 +77,7 @@ export default function LoginPage() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                // handleSubmit(e);
                 setSubmit(true);
               }}
             >
@@ -88,12 +91,19 @@ export default function LoginPage() {
                 required
                 type="text"
                 id="username"
+                pattern="[a-zA-Z0-9]{5,20}"
                 placeholder="Enter Username (Case Sensitive)"
                 onChange={handleChange}
                 value={formValues.username}
                 style={{ background: "#F5EEE4" }}
                 className="form-control border-dark mb-2 p-2"
               />
+              {/* <p
+                className="err-msg"
+                style={{ display: formErrors ? "none" : "block" }}
+              >
+                {formErrors.username[0]}
+              </p> */}
 
               <label
                 htmlFor="password"
@@ -111,8 +121,20 @@ export default function LoginPage() {
                 value={formValues.password}
                 placeholder="Enter Password"
                 style={{ background: "#F5EEE4" }}
+                // pattern="[a-zA-Z0-9]{8,20}"
                 className="form-control border-dark mb-2 p-2"
               />
+              {/* {formErrors.password.map((msg) => (
+                <p
+                  key={msg}
+                  className="text-capitalize text-start text-danger p-0 m-0"
+                  style={{
+                    display: formErrors.password.length <= 0 ? "none" : "block",
+                  }}
+                >
+                  {msg}
+                </p>
+              ))} */}
 
               <div className="d-flex justify-content-between pt-2">
                 <a href="/signup" className="btn btn-outline-dark">
@@ -135,16 +157,24 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className={
-          error === null ?
-          "card border-dark bg-danger col-8 p-0 mb-4 d-none"
-          :
-          "card border-dark bg-danger col-8 p-0 mb-4"
-        }>
-          <h6 className="card-header border-dark text-uppercase">error occured</h6>
+        <div
+          className={
+            error === null
+              ? // error === null || formErrors.password.length > 0 || formErrors.username.length > 0
+                "card border-dark bg-danger col-8 p-0 mb-4 d-none"
+              : "card border-dark bg-danger col-8 p-0 mb-4"
+          }
+        >
+          <h6 className="card-header border-dark text-uppercase">
+            error occured
+          </h6>
           <div className="card-body d-flex flex-column justify-content-between">
-            <p className="text-capitalize p-0 m-0">{error?.response.status} {error?.response.statusText}</p>
-            <p className="text-capitalize p-0 m-0">{error?.response.data.message}</p>
+            <p className="text-capitalize p-0 m-0">
+              {error?.response.status} {error?.response.statusText}
+            </p>
+            <p className="text-capitalize p-0 m-0">
+              {error?.response.data.message}
+            </p>
             <p className="text-capitalize p-0 m-0">please try again!</p>
           </div>
         </div>

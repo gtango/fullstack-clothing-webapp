@@ -81,16 +81,20 @@ export default function NavListItemContent({
         titleSection.list.length === 0 ? (
           <p className="m-0 p-3">*Cricket Noises*</p>
         ) : (
-          titleSection.list.map((section) => {
-            console.log('def ' + section)
+          titleSection.list.map((section, index) => {
             return (
-              <li key={section}>
-                <a className="dropdown-item" href="\">
-                  {section}
-                </a>
+              index === 5 ?
+              <li className="px-3 rounded" key={`${section}-cart-${index}`}>
+                ...
+              </li>
+              :
+              <li className='px-3 py-1 rounded' key={`${section}-cart-${index}`} 
+              style={{display:'block', clear:'both', whiteSpace:'nowrap'}}>
+                  <p className="p-0 m-0">{section.product.productName}</p>
+                  <p className="p-0 m-0">quantity: {section.quantity}</p>
               </li>
             );
-          })
+          }).slice(0,6)
         )
       ) : (
         // profile login and logout buttons rendered here
@@ -99,7 +103,7 @@ export default function NavListItemContent({
             (localStorage.getItem("user") === null || localStorage.getItem("user") === undefined) ? (
             <li aria-hidden key={section}></li>
           ) : (
-            <li key={section}>
+            <li key={`${section}-settings`}>
               <a
                 className="dropdown-item rounded"
                 onClick={() =>
@@ -115,6 +119,12 @@ export default function NavListItemContent({
           );
         })
       )}
+      {
+        id.toLowerCase().includes("cart") && titleSection.list.length > 0 ?
+          <a className="btn btn-secondary border m-0 w-100" href="/cart">Checkout</a>
+        :
+        <></>
+      }
     </ul>
   );
 }

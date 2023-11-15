@@ -120,8 +120,13 @@ export default function ProductFilter({
         :
           <></>
         }
+        {
+        section.localeCompare('search') === 0 ?
+        <></>
+        :
         <ProductCategoryList section={section} categories={categories} />
-
+        }
+ 
         <h6 className="text-center border-bottom border-black px-1 py-3 m-0">
           Filter By
         </h6>

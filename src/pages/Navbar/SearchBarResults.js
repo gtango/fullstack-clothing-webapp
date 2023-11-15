@@ -10,7 +10,10 @@ const list = items === undefined ||items === null ? [] : items;
         list.length > 0 ?
           list.map((item) => {
             return (
-              <a className='list-group-item list-group-item-action' key={item.title} href={item.images[0]}>{item.title} {item.id}</a>
+              <a className='d-flex justify-content-between list-group-item list-group-item-action' key={item.upc} href={`/shop/${item.upc}`}>
+                <p className='m-0 p-0'>{item.productName}</p>
+                <p className='m-0 p-0'>{item.upc}</p>
+              </a>
             )
           }).slice(0,10)
 
