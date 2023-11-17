@@ -58,6 +58,11 @@ export default function CartPage() {
     onError: (e) => console.log(e),
   });
 
+  const removeItem = async (user, item) => {
+    const result = updateTotalPriceMutation({user: user, upc: item, quantity: 0 })
+    return result
+  }
+
   if (localStorage.length < 0) {
     return (
       <div
@@ -150,9 +155,22 @@ export default function CartPage() {
                       </div>
 
                       <div className="col col-lg-7 d-flex flex-row flex-wrap text-capitalize">
-                        <h1 className="border-bottom border-dark text-center text-sm-start w-100 fs-5">
-                          {item.product.productName}
-                        </h1>
+                        <div className="d-flex justify-content-between align-items-end border-bottom border-dark text-center text-sm-start w-100">
+                          <h1 className="fs-5">
+                            {item.product.productName}
+                          </h1>
+                          <h6 className="p-0 mb-1">
+                            <button 
+                              className="btn btn-link checkoutRemove text-decoration-none text-capitalize m-0 p-0"
+                              onClick={() => removeItem(
+                                JSON.parse(localStorage.getItem("user")).username,
+                                item.product.upc)
+                              }  
+                            >
+                              remove
+                            </button>
+                          </h6>
+                        </div>
 
                         {/* upc */}
                         <div className="w-100 d-flex flex-wrap justify-content-between ">
@@ -211,21 +229,6 @@ export default function CartPage() {
                             ${(item.product.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
-
-                        {/* <div className="col-12 d-flex ">
-                            <p className="px-2 m-0">quantity:</p>
-                            <PreselectedDropdown
-                                pre={item.quantity}
-                                upc={item.product.upc}
-                                username={JSON.parse(localStorage.getItem('user')).username}
-                                setCostFn={updateTotalPriceMutation}
-                            />
-                            <p className="px-2 m-0 text-lowercase">x ${item.product.price.toFixed(2)}</p>
-                        </div> */}
-
-                        {/* <p className="col-12 border-top border-dark m-0">
-                          Total: ${(item.product.price * item.quantity).toFixed(2)}
-                        </p> */}
                       </div>
                     </div>
                   );
@@ -239,7 +242,7 @@ export default function CartPage() {
                   totalItems={data?.totalItems}
                 />
               </div>
-              <button className="col btn btn-dark text-center text-capitalize order-2 order-lg-last">clear cart</button>
+              {/* <button className="col btn btn-dark text-center text-capitalize order-2 order-lg-last">clear cart</button> */}
             </>
           ) : (
             <>

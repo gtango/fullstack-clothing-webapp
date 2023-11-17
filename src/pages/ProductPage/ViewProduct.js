@@ -64,7 +64,10 @@ export default function ViewProduct() {
       style={{ background: "#F5EEE4", minHeight: "90vh" }}
     >
       {isLoading ? (
-        <div className="d-flex align-items-center justify-content-center text-uppercase" style={{height:'90vh'}}>
+        <div
+          className="d-flex align-items-center justify-content-center text-uppercase"
+          style={{ height: "90vh" }}
+        >
           <div className="modal-header w-100 d-flex flex-column justify-content-center align-items-center border-0">
             <p>Getting Item</p>
             <div className="spinner-border" aria-hidden="true"></div>
@@ -168,16 +171,17 @@ export default function ViewProduct() {
                   ></button>
                 </div>
                 <div className="modal-body text-capitalize">
-                  {
-                    cartStatus ?
-                      <p className="m-0 pb-3">Successfully added to cart!</p>
-                    :
-                      <>
-                        <p className="m-0">there was an error adding the item.</p>
-                        <p className="m-0 pb-3">{mutation?.error?.response?.data?.status} - {HandleError(mutation?.error?.response?.data?.status)}</p>
-                      </>
-
-                  }
+                  {cartStatus ? (
+                    <p className="m-0 pb-3">Successfully added to cart!</p>
+                  ) : (
+                    <>
+                      <p className="m-0">there was an error adding the item.</p>
+                      <p className="m-0 pb-3">
+                        {mutation?.error?.response?.data?.status} -{" "}
+                        {HandleError(mutation?.error?.response?.data?.status)}
+                      </p>
+                    </>
+                  )}
                   {/* <p className="m-0 pb-3">
                     {cartStatus
                       ? "you successfully added the item!"
@@ -194,19 +198,33 @@ export default function ViewProduct() {
                   </p>
                 </div>
                 <div className="modal-footer d-flex justify-content-between">
-                  <a
-                    className="btn btn-secondary"
-                    href="/cart"
-                  >
-                    Cart
-                  </a>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => window.history.back()}
-                  >
-                    Close
-                  </button>
+                  {cartStatus ? (
+                    <>
+                      <a className="btn btn-secondary" href="/cart">
+                        Cart
+                      </a>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => window.history.back()}
+                      >
+                        Back
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => window.history.back()}
+                      >
+                        Back
+                      </button>
+                      <a className="btn btn-secondary" href="/login">
+                        Login
+                      </a>
+                    </>
+                  )}
                 </div>
               </>
             )}

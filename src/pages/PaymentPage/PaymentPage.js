@@ -74,10 +74,10 @@ export default function PaymentPage() {
             </>
           ) : (
             <>
-              <p className="pb-0 mb-0">
+              <p>
                 Sorry, but there was an error with your payment.
               </p>
-              <a className="btn" href="/cart">
+              <a className="btn btn-dark" href="/cart">
                 Back to Cart
               </a>
             </>
